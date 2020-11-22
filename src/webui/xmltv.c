@@ -26,6 +26,12 @@
 
 #define XMLTV_FLAG_LCN		(1<<0)
 
+enum {
+  URLAUTH_NONE,
+  URLAUTH_TICKET,
+  URLAUTH_CODE
+};
+
 /*
  *
  */
