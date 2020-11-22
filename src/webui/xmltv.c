@@ -32,6 +32,20 @@ enum {
   URLAUTH_CODE
 };
 
+/**
+ *
+ */
+static const char *
+page_xmltv_authpath(int urlauth)
+{
+  switch (urlauth) {
+  case URLAUTH_NONE:    return "";
+  case URLAUTH_TICKET:  return "/ticket";
+  case URLAUTH_CODE:    return "/auth";
+  default: assert(0);   return "";
+  };
+}
+
 /*
  *
  */
@@ -126,18 +140,7 @@ http_xmltv_channel_add(http_connection_t *hc, htsbuf_queue_t *hq, int flags, con
     int id = imagecache_get_id(icon);
     if (id) {
       htsbuf_qprintf(hq, "  <icon src=\"%s/imagecache/%d\"/>\n", hostpath, id);
-      switch (urlauth) {
-      case URLAUTH_NONE:
-        break;
-      case URLAUTH_TICKET:
-        htsbuf_qprintf(hq, "?ticket=%s", ticket);
-        break;
-      case URLAUTH_CODE:
-        if (!strempty(access->aa_auth))
-          htsbuf_qprintf(hq, "?auth=%s", access->aa_auth);
-        break;
-      }
-      //htsbuf_append_str(hq, "\"");
+      htsbuf_qprintf(hq, "&auth=%s", access->aa_auth);
     } else {
       htsbuf_append_str(hq, "  <icon src=\"");
       htsbuf_append_and_escape_xml(hq, icon);
