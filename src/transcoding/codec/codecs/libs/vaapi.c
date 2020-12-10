@@ -177,8 +177,9 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
     // bit_rate or qp
     if (self->bit_rate) {
         AV_DICT_SET_BIT_RATE(opts, self->bit_rate);
-        AV_DICT_SET_INT(opts, "maxrate", (self->bit_rate) * 1000, AV_DICT_DONT_OVERWRITE);
+        //AV_DICT_SET_INT(opts, "maxrate", (self->bit_rate) * 1000, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET_INT(opts, "bufsize", ((self->bit_rate) * 1000) * 2, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "rc_mode", 5, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
     }
     else {
