@@ -36,6 +36,7 @@ typedef struct {
     int maxrate;
     int rc_mode;
     int bufsize;
+    int qp_vbr;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
@@ -176,6 +177,16 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.d    = 0,
             },
             {
+                .type     = PT_DBL,
+                .id       = "qp_vbr",
+                .name     = N_("qp_vbr"),
+                .desc     = N_("qp_vbr"),
+                .group    = 3,
+                .get_opts = codec_profile_class_get_opts,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, qp_vbr),
+                .def.d    = 0,
+            },
+            {
                 .type     = PT_INT,
                 .id       = "qp",
                 .name     = N_("Constant QP (0=auto)"),
@@ -212,7 +223,8 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
         AV_DICT_SET_INT(opts, "maxrate", (self->maxrate) * 1000, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET_INT(opts, "bufsize", (self->bufsize) * 1000, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
-        AV_DICT_SET_QP(opts, self->qp, 23);
+        AV_DICT_SET_INT(opts, "qp", self->qp_vbr, AV_DICT_DONT_OVERWRITE);
+        //AV_DICT_SET_QP(opts, self->qp, 23);
         AV_DICT_SET_INT(opts, "rc_mode", self->rc_mode, AV_DICT_DONT_OVERWRITE);
 
 
