@@ -34,6 +34,7 @@ typedef struct {
     int qp;
     int quality;
     int qpvbr;
+    int minrate;
     int maxrate;
     int bufsize;
     int rcmode;
@@ -149,8 +150,8 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
             {
                 .type     = PT_DBL,
                 .id       = "bufsize",
-                .name     = N_("bufsize"),
-                .desc     = N_("bufsize"),
+                .name     = N_("bufsize (kb/s)"),
+                .desc     = N_("Specifies the decoder buffer size, which determines the variability of the output bitrate"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, bufsize),
@@ -160,7 +161,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .type     = PT_DBL,
                 .id       = "minrate",
                 .name     = N_("minrate (kb/s) (0=disabled)"),
-                .desc     = N_("minrate"),
+                .desc     = N_("Specifies a minimum tolerance to be used"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, minrate),
@@ -170,7 +171,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .type     = PT_DBL,
                 .id       = "maxrate",
                 .name     = N_("maxrate (kb/s) (0=disabled)"),
-                .desc     = N_("maxrate"),
+                .desc     = N_("Specifies a maximum tolerance. this is only used in conjunction with bufsize"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, maxrate),
@@ -179,8 +180,8 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
             {
                 .type     = PT_INT,
                 .id       = "qpvbr",
-                .name     = N_("qpvbr"),
-                .desc     = N_("qpvbr"),
+                .name     = N_("Constant QP (0=disabled)"),
+                .desc     = N_("Fixed QP of P frames [0-52]."),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, qpvbr),
