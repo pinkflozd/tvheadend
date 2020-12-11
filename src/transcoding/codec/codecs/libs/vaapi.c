@@ -33,6 +33,9 @@ typedef struct {
     TVHVideoCodecProfile;
     int qp;
     int quality;
+    int maxrate;
+    int rc_mode;
+    int bufsize;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
@@ -143,6 +146,36 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.d    = 0,
             },
             {
+                .type     = PT_DBL,
+                .id       = "maxrate",
+                .name     = N_("maxrate"),
+                .desc     = N_("maxrate"),
+                .group    = 3,
+                .get_opts = codec_profile_class_get_opts,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, maxrate),
+                .def.d    = 0,
+            },
+            {
+                .type     = PT_DBL,
+                .id       = "bufsize",
+                .name     = N_("bufsize"),
+                .desc     = N_("bufsize"),
+                .group    = 3,
+                .get_opts = codec_profile_class_get_opts,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, bufsize),
+                .def.d    = 0,
+            },
+            {
+                .type     = PT_DBL,
+                .id       = "rc_mode",
+                .name     = N_("rc_mode"),
+                .desc     = N_("rc_mode"),
+                .group    = 3,
+                .get_opts = codec_profile_class_get_opts,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, rc_mode),
+                .def.d    = 0,
+            },
+            {
                 .type     = PT_INT,
                 .id       = "qp",
                 .name     = N_("Constant QP (0=auto)"),
@@ -175,15 +208,14 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
     // bit_rate or qp
-    if (self->bit_rate) {
         AV_DICT_SET_BIT_RATE(opts, self->bit_rate);
-        AV_DICT_SET_INT(opts, "maxrate", (self->bit_rate) * 1000, AV_DICT_DONT_OVERWRITE);
-        AV_DICT_SET_INT(opts, "bufsize", ((self->bit_rate) * 1000) * 2, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "maxrate", (self->maxrate) * 1000, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "bufsize", (self->bufsize) * 1000, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
-    }
-    else {
-        AV_DICT_SET_QP(opts, self->qp, 20);
-    }
+        AV_DICT_SET_QP(opts, self->qp, 23);
+        AV_DICT_SET_INT(opts, "rc_mode", self->rc_mode, AV_DICT_DONT_OVERWRITE);
+
+
     AV_DICT_SET_INT(opts, "quality", self->quality, 0);
     return 0;
 }
