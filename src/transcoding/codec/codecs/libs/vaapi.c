@@ -38,6 +38,7 @@ typedef struct {
     double maxrate;
     double bufsize;
     int rc_mode;
+    char *flags;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
@@ -200,6 +201,15 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.i    = 0,
             },
             {
+                .type     = PT_STR,
+                .id       = "flags",
+                .name     = N_("flags"),
+                .desc     = N_("flags"),
+                .group    = 3,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, flags),
+                .get_opts = codec_profile_class_get_opts,
+            },
+            {
                 .type     = PT_INT,
                 .id       = "qp",
                 .name     = N_("Constant QP (0=auto)"),
@@ -231,7 +241,7 @@ static int
 tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
-    AV_DICT_SET_INT(opts, "flags", "+ildct", AV_DICT_DONT_OVERWRITE);
+    AV_DICT_SET_INT(opts, "flags", self->flags, AV_DICT_DONT_OVERWRITE);
     // bit_rate or qp
     if (self->bit_rate) {
         AV_DICT_SET_BIT_RATE(opts, self->bit_rate);
