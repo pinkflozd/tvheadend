@@ -33,6 +33,11 @@ typedef struct {
     TVHVideoCodecProfile;
     int qp;
     int quality;
+    int qp_vbr;
+    double minrate;
+    double maxrate;
+    double bufsize;
+    int rc_mode;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
@@ -173,31 +178,33 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.d    = 0,
             },
             {
-                .type     = PT_DBL,
-                .id       = "qpvbr",
+                .type     = PT_INT,
+                .id       = "QP VBR",
                 .name     = N_("Constant QP (0=disabled)"),
                 .desc     = N_("Fixed QP of P frames [0-52]."),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(TVHCodecProfile, qpvbr),
-                .def.d    = 0,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, qp_vbr),
+                .intextra = INTEXTRA_RANGE(0, 52, 1),
+                .def.i    = 0,
             },
             {
-                .type     = PT_DBL,
-                .id       = "rcmode",
+                .type     = PT_INT,
+                .id       = "rc_mode",
                 .name     = N_("rc_mode"),
                 .desc     = N_("rc_mode"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(TVHCodecProfile, rcmode),
-                .def.d    = 0,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, rc_mode),
+                .intextra = INTEXTRA_RANGE(0, 6, 1),
+                .def.i    = 0,
             },
             {
                 .type     = PT_INT,
                 .id       = "qp",
                 .name     = N_("Constant QP (0=auto)"),
-                .group    = 3,
                 .desc     = N_("Fixed QP of P frames [0-52]."),
+                .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, qp),
                 .intextra = INTEXTRA_RANGE(0, 52, 1),
@@ -224,6 +231,7 @@ static int
 tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
+    AV_DICT_SET_INT(opts, "flags", "+ildct", AV_DICT_DONT_OVERWRITE);
     // bit_rate or qp
     if (self->bit_rate) {
         AV_DICT_SET_BIT_RATE(opts, self->bit_rate);
@@ -236,11 +244,11 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                 AV_DICT_SET_INT(opts, "minrate", (self->minrate) * 1000, 0);
             }
         }
-        if (self->qpvbr) {
-            AV_DICT_SET_INT(opts, "qp", self->qpvbr, 0);
+        if (self->qp_vbr) {
+            AV_DICT_SET_INT(opts, "qp", self->qp_vbr, 0);
         }
-        if (self->rcmode) {
-            AV_DICT_SET_INT(opts, "rc_mode", self->rcmode, 0);
+        if (self->rc_mode) {
+            AV_DICT_SET_INT(opts, "rc_mode", self->rc_mode, 0);
         }
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
     }
