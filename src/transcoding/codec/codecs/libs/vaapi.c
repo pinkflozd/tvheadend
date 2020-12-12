@@ -38,7 +38,7 @@ typedef struct {
     double maxrate;
     double bufsize;
     int rc_mode;
-    char *flags;
+    char flags;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
