@@ -173,26 +173,24 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.d    = 0,
             },
             {
-                .type     = PT_INT,
+                .type     = PT_DBL,
                 .id       = "qpvbr",
                 .name     = N_("Constant QP (0=disabled)"),
                 .desc     = N_("Fixed QP of P frames [0-52]."),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(TVHCodecProfile, qpvbr),
-                .intextra = INTEXTRA_RANGE(0, 52, 0),
-                .def.i    = 0,
+                .def.d    = 0,
             },
             {
-                .type     = PT_INT,
+                .type     = PT_DBL,
                 .id       = "rcmode",
                 .name     = N_("rc_mode"),
                 .desc     = N_("rc_mode"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(TVHCodecProfile, rcmode),
-                .intextra = INTEXTRA_RANGE(0, 6, 0),
-                .def.i    = 0,
+                .def.d    = 0,
             },
             {
                 .type     = PT_INT,
@@ -241,7 +239,9 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
         if (self->qpvbr) {
             AV_DICT_SET_INT(opts, "qp", self->qpvbr, 0);
         }
-            AV_DICT_SET_INT(opts, "rc_mode", 5, 0);
+        if (self->rcmode) {
+            AV_DICT_SET_INT(opts, "rc_mode", self->rcmode, 0);
+        }
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
     }
     else {
