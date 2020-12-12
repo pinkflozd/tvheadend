@@ -38,8 +38,6 @@ typedef struct {
     double maxrate;
     double bufsize;
     int rc_mode;
-    int top;
-    int bf;
     char flags;
 } tvh_codec_profile_vaapi_t;
 
@@ -213,26 +211,6 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
             },
             {
                 .type     = PT_INT,
-                .id       = "top",
-                .name     = N_("top"),
-                .desc     = N_("top"),
-                .group    = 3,
-                .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, top),
-                .intextra = INTEXTRA_RANGE(0, 1, 0),
-            },
-            {
-                .type     = PT_INT,
-                .id       = "bf",
-                .name     = N_("bf"),
-                .desc     = N_("bf"),
-                .group    = 3,
-                .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, bf),
-                .intextra = INTEXTRA_RANGE(0, 52, 0),
-            },
-            {
-                .type     = PT_INT,
                 .id       = "qp",
                 .name     = N_("Constant QP (0=auto)"),
                 .desc     = N_("Fixed QP of P frames [0-52]."),
@@ -265,10 +243,7 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
 {
     if (self->flags) {
         AV_DICT_SET_INT(opts, "flags", self->flags, AV_DICT_DONT_OVERWRITE);
-        AV_DICT_SET_INT(opts, "top", self->top, AV_DICT_DONT_OVERWRITE);
-    }
-    if (self->bf) {
-        AV_DICT_SET_INT(opts, "bf", self->bf, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "top", 0, AV_DICT_DONT_OVERWRITE);
     }
     // bit_rate or qp
     if (self->bit_rate) {
