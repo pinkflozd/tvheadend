@@ -155,7 +155,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies the decoder buffer size, which determines the variability of the output bitrate"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(TVHCodecProfile, bufsize),
+                .off      = offsetof(tvh_codec_profile_vaapi_t, bufsize),
                 .def.d    = 0,
             },
             {
@@ -165,7 +165,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies a minimum tolerance to be used"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(TVHCodecProfile, minrate),
+                .off      = offsetof(tvh_codec_profile_vaapi_t, minrate),
                 .def.d    = 0,
             },
             {
@@ -175,7 +175,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies a maximum tolerance. this is only used in conjunction with bufsize"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(TVHCodecProfile, maxrate),
+                .off      = offsetof(tvh_codec_profile_vaapi_t, maxrate),
                 .def.d    = 0,
             },
             {
