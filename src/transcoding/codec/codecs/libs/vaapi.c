@@ -241,9 +241,7 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
         if (self->qpvbr) {
             AV_DICT_SET_INT(opts, "qp", self->qpvbr, 0);
         }
-        if (self->rcmode) {
-            AV_DICT_SET_INT(opts, "rc_mode", self->rcmode, 0);
-        }
+            AV_DICT_SET_INT(opts, "rc_mode", 5, 0);
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
     }
     else {
