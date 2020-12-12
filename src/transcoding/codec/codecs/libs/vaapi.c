@@ -33,11 +33,6 @@ typedef struct {
     TVHVideoCodecProfile;
     int qp;
     int quality;
-    int qpvbr;
-    int minrate;
-    int maxrate;
-    int bufsize;
-    int rcmode;
 } tvh_codec_profile_vaapi_t;
 
 #if defined(__linux__)
@@ -154,7 +149,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies the decoder buffer size, which determines the variability of the output bitrate"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, bufsize),
+                .off      = offsetof(TVHCodecProfile, bufsize),
                 .def.d    = 0,
             },
             {
@@ -164,7 +159,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies a minimum tolerance to be used"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, minrate),
+                .off      = offsetof(TVHCodecProfile, minrate),
                 .def.d    = 0,
             },
             {
@@ -174,7 +169,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Specifies a maximum tolerance. this is only used in conjunction with bufsize"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, maxrate),
+                .off      = offsetof(TVHCodecProfile, maxrate),
                 .def.d    = 0,
             },
             {
@@ -184,7 +179,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("Fixed QP of P frames [0-52]."),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, qpvbr),
+                .off      = offsetof(TVHCodecProfile, qpvbr),
                 .intextra = INTEXTRA_RANGE(0, 52, 0),
                 .def.i    = 0,
             },
@@ -195,7 +190,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .desc     = N_("rc_mode"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, rcmode),
+                .off      = offsetof(TVHCodecProfile, rcmode),
                 .intextra = INTEXTRA_RANGE(0, 6, 0),
                 .def.i    = 0,
             },

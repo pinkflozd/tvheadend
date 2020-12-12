@@ -91,6 +91,11 @@ struct tvh_codec_profile {
     char *codec_name;
     double bit_rate;
     double qscale;
+    double qpvbr;
+    double minrate;
+    double maxrate;
+    double bufsize;
+    double rcmode;
     int profile;
     char *device; // for hardware acceleration
     LIST_ENTRY(tvh_codec_profile) link;
