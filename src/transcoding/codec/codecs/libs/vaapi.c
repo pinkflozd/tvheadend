@@ -39,7 +39,6 @@ typedef struct {
     double bufsize;
     int rc_mode;
     int tff;
-    int bff;
     char flags;
 } tvh_codec_profile_vaapi_t;
 
@@ -219,18 +218,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, tff),
-                .intextra = INTEXTRA_RANGE(0, 1, 0),
-                .def.i    = 0,
-            },
-            {
-                .type     = PT_INT,
-                .id       = "bff",
-                .name     = N_("bf"),
-                .desc     = N_("bf"),
-                .group    = 3,
-                .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, bff),
-                .intextra = INTEXTRA_RANGE(0, 4, 0),
+                .intextra = INTEXTRA_RANGE(0, 1, 1),
                 .def.i    = 0,
             },
             {
