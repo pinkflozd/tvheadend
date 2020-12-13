@@ -256,7 +256,6 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
     if (self->flags) {
         AV_DICT_SET_INT(opts, "flags", self->flags, AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET_INT(opts, "top", self->tff, 0);
-        AV_DICT_SET_INT(opts, "bf", self->bff, 0);
     }
     // bit_rate or qp
     if (self->bit_rate) {
