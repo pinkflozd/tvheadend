@@ -228,7 +228,7 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, interlace_top),
-                .intextra = INTEXTRA_RANGE(-1, 1, -1),
+                .intextra = INTEXTRA_RANGE(-1, 1, 1),
                 .def.i    = -1,
             },
             {
