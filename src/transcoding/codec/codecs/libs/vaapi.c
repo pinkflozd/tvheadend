@@ -40,6 +40,7 @@ typedef struct {
     int interlace;
     int interlace_top;
     int low_power;
+    int rc_mode;
     char flags;
 } tvh_codec_profile_vaapi_t;
 
