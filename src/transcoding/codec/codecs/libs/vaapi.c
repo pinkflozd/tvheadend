@@ -278,7 +278,7 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
     if (self->low_power) {
-        AV_DICT_SET_INT(opts, "low_power", low_power, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "low_power", self->low_power, AV_DICT_DONT_OVERWRITE);
     }
     if (self->interlace) {
         AV_DICT_SET_INT(opts, "flags", "+ilme+ildct", AV_DICT_DONT_OVERWRITE);
@@ -358,7 +358,7 @@ tvh_codec_profile_vaapi_hevc_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
     if (self->low_power) {
-        AV_DICT_SET_INT(opts, "low_power", low_power, AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "low_power", self->low_power, AV_DICT_DONT_OVERWRITE);
     }
     if (self->interlace) {
         AV_DICT_SET_INT(opts, "flags", "+ilme+ildct", AV_DICT_DONT_OVERWRITE);
