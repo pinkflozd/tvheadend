@@ -37,8 +37,9 @@ typedef struct {
     double minrate;
     double maxrate;
     double bufsize;
-    int rc_mode;
-    int tff;
+    int interlace;
+    int interlace_top;
+    int low_power;
     char flags;
 } tvh_codec_profile_vaapi_t;
 
@@ -153,7 +154,8 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .type     = PT_DBL,
                 .id       = "bufsize",
                 .name     = N_("bufsize (kb/s)"),
-                .desc     = N_("Specifies the decoder buffer size, which determines the variability of the output bitrate"),
+                .desc     = N_("Specifies the decoder buffer size, "
+                                "which determines the variability of the output bitrate"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, bufsize),
@@ -173,7 +175,8 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .type     = PT_DBL,
                 .id       = "maxrate",
                 .name     = N_("maxrate (kb/s) (0=disabled)"),
-                .desc     = N_("Specifies a maximum tolerance. this is only used in conjunction with bufsize"),
+                .desc     = N_("Specifies a maximum tolerance. "
+                                "This is only used in conjunction with bufsize"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, maxrate),
@@ -194,7 +197,14 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .type     = PT_INT,
                 .id       = "rc_mode",
                 .name     = N_("rc_mode"),
-                .desc     = N_("rc_mode"),
+                .desc     = N_("Set rate control mode (from 0 to 6) (0=auto)"
+                                "0=auto Choose mode automatically based on other parameters"
+                                "1 = CQP Constant-quality"
+                                "2 = CBR Constant-bitrate"
+                                "3 = VBR Variable-bitrate"
+                                "4 = ICQ Intelligent constant-quality"
+                                "5 = QVBR Quality-defined variable-bitrate"
+                                "6 = AVBR Average variable-bitrate"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
                 .off      = offsetof(tvh_codec_profile_vaapi_t, rc_mode),
@@ -202,24 +212,37 @@ static const codec_profile_class_t codec_profile_vaapi_class = {
                 .def.i    = 0,
             },
             {
-                .type     = PT_STR,
-                .id       = "flags",
-                .name     = N_("flags"),
-                .desc     = N_("flags"),
+                .type     = PT_BOOL,
+                .id       = "interlace",
+                .name     = N_("Interlace output"),
+                .desc     = N_("Interlace output"),
                 .group    = 3,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, flags),
+                .off      = offsetof(tvh_codec_profile_vaapi_t, interlace),
                 .get_opts = codec_profile_class_get_opts,
             },
             {
                 .type     = PT_INT,
-                .id       = "tff",
+                .id       = "interlace_top",
                 .name     = N_("Top"),
                 .desc     = N_("Top"),
                 .group    = 3,
                 .get_opts = codec_profile_class_get_opts,
-                .off      = offsetof(tvh_codec_profile_vaapi_t, tff),
-                .intextra = INTEXTRA_RANGE(0, 1, 1),
-                .def.i    = 0,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, interlace_top),
+                .intextra = INTEXTRA_RANGE(-1, 1, 1),
+                .def.i    = -1,
+            },
+            {
+                .type     = PT_BOOL,
+                .id       = "low_power",
+                .name     = N_("low_power"),
+                .desc     = N_("Some drivers/platforms offer a second encoder for some "
+                                "codecs intended to use less power than the default encoder; "
+                                "setting this option will attempt to use that encoder. "
+                                "Note that it may support a reduced feature set, "
+                                "so some other options may not be available in this mode."),
+                .group    = 3,
+                .get_opts = codec_profile_class_get_opts,
+                .off      = offsetof(tvh_codec_profile_vaapi_t, low_power),
             },
             {
                 .type     = PT_INT,
@@ -253,9 +276,12 @@ static int
 tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
-    if (self->flags) {
-        AV_DICT_SET_INT(opts, "flags", self->flags, AV_DICT_DONT_OVERWRITE);
-        AV_DICT_SET_INT(opts, "top", self->tff, 0);
+    if (self->low_power) {
+        AV_DICT_SET_INT(opts, "low_power", low_power, AV_DICT_DONT_OVERWRITE);
+    }
+    if (self->interlace) {
+        AV_DICT_SET_INT(opts, "flags", "+ilme+ildct", AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "top", self->interlace_top, 0);
     }
     // bit_rate or qp
     if (self->bit_rate) {
@@ -330,11 +356,31 @@ static int
 tvh_codec_profile_vaapi_hevc_open(tvh_codec_profile_vaapi_t *self,
                                   AVDictionary **opts)
 {
+    if (self->low_power) {
+        AV_DICT_SET_INT(opts, "low_power", low_power, AV_DICT_DONT_OVERWRITE);
+    }
+    if (self->interlace) {
+        AV_DICT_SET_INT(opts, "flags", "+ilme+ildct", AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET_INT(opts, "top", self->interlace_top, 0);
+    }
     // bit_rate or qp
     if (self->bit_rate) {
         AV_DICT_SET_BIT_RATE(opts, self->bit_rate);
-        AV_DICT_SET_INT(opts, "maxrate", (self->bit_rate) * 1000, AV_DICT_DONT_OVERWRITE);
-        AV_DICT_SET_INT(opts, "bufsize", ((self->bit_rate) * 1000) * 2, AV_DICT_DONT_OVERWRITE);
+        if (self->bufsize) {
+            AV_DICT_SET_INT(opts, "bufsize", (self->bufsize) * 1000, 0);
+            if (self->maxrate) {
+                AV_DICT_SET_INT(opts, "maxrate", (self->maxrate) * 1000, 0);
+            }
+            if (self->minrate) {
+                AV_DICT_SET_INT(opts, "minrate", (self->minrate) * 1000, 0);
+            }
+        }
+        if (self->qp_vbr) {
+            AV_DICT_SET_INT(opts, "qp", self->qp_vbr, 0);
+        }
+        if (self->rc_mode) {
+            AV_DICT_SET_INT(opts, "rc_mode", self->rc_mode, 0);
+        }
         AV_DICT_SET(opts, "force_key_frames", "expr:gte(t,n_forced*3)", AV_DICT_DONT_OVERWRITE);
     }
     else {
