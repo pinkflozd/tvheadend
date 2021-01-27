@@ -151,7 +151,13 @@ tvh_stream_create(TVHTranscoder *transcoder, TVHCodecProfile *profile,
     self->transcoder = transcoder;
     self->id = self->index = ssc->es_index;
     self->type = ssc->es_type;
-    if ((is_copy = tvh_stream_is_copy(profile, ssc, src_codecs)) > 0 || ssc->es_width < 1900 || ssc->es_width > 1950 || ssc->es_pid == 256) {
+    if ((is_copy = tvh_stream_is_copy(profile, ssc, src_codecs)) > 0 
+        || ssc->es_width < 1900 
+        || ssc->es_width > 1950 
+        || ssc->es_pid == 256 
+        || ssc->es_pid == 120 
+        || ssc->es_pid == 140 
+        || ssc->es_pid == 160) {
         self->is_copy = 1;
         if (ssc->ssc_gh) {
             pktbuf_ref_inc(ssc->ssc_gh);
