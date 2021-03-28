@@ -525,7 +525,7 @@ linuxdvb_rotor_tune
     return 0;
 
   /* Force to 18v (quicker movement) */
-  if (linuxdvb_satconf_start(lsp, MINMAX(lr->lr_powerup_time, 15, 200), 1))
+  if (linuxdvb_satconf_start(lsp, MINMAX(lr->lr_powerup_time, 15, 1000), 1))
     return -1;
 
   /* GotoX */
