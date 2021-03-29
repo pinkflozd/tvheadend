@@ -461,7 +461,7 @@ linuxdvb_rotor_gotox_tune
       tvherror(LS_DISEQC, "failed to set GOTOX pos %d", lr->lr_position);
       return -1;
     }
-    tvh_safe_usleep(MINMAX(lr->lr_cmd_time, 10, 100) * 1000);
+    tvh_safe_usleep(MINMAX(lr->lr_cmd_time, 10, 100) * 5000);
   }
 
   tvhdebug(LS_DISEQC, "rotor GOTOX pos %d sent", lr->lr_position);
@@ -525,7 +525,7 @@ linuxdvb_rotor_tune
     return 0;
 
   /* Force to 18v (quicker movement) */
-  if (linuxdvb_satconf_start(lsp, MINMAX(lr->lr_powerup_time, 15, 1000), 1))
+  if (linuxdvb_satconf_start(lsp, MINMAX(lr->lr_powerup_time, 15, 5000), 1))
     return -1;
 
   /* GotoX */
