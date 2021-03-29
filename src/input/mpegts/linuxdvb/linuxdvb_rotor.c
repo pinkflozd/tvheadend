@@ -461,7 +461,7 @@ linuxdvb_rotor_gotox_tune
       tvherror(LS_DISEQC, "failed to set GOTOX pos %d", lr->lr_position);
       return -1;
     }
-    tvh_safe_usleep(MINMAX(lr->lr_cmd_time, 10, 100) * 5000);
+    tvh_safe_usleep(MINMAX(lr->lr_cmd_time, 10, 100) * 1000);
   }
 
   tvhdebug(LS_DISEQC, "rotor GOTOX pos %d sent", lr->lr_position);
