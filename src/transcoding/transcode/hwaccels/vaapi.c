@@ -571,7 +571,7 @@ vaapi_get_scale_filter(AVCodecContext *iavctx, AVCodecContext *oavctx,
 int
 vaapi_get_deint_filter(AVCodecContext *avctx, char *filter, size_t filter_len)
 {
-    snprintf(filter, filter_len, "deinterlace_vaapi");
+    snprintf(filter, filter_len, "deinterlace_vaapi=rate=field");
     return 0;
 }
 
