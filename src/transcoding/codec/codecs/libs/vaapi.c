@@ -279,7 +279,7 @@ tvh_codec_profile_vaapi_h264_open(tvh_codec_profile_vaapi_t *self,
         AV_DICT_SET_INT(opts, "low_power", self->low_power, AV_DICT_DONT_OVERWRITE);
     }
     if (self->interlace) {
-        AV_DICT_SET(opts, "flags", "+ilme+ildct", AV_DICT_DONT_OVERWRITE);
+        AV_DICT_SET(opts, "flags", "+ildct", AV_DICT_DONT_OVERWRITE);
         AV_DICT_SET_INT(opts, "top", self->interlace_top, AV_DICT_DONT_OVERWRITE);
     }
     // bit_rate or qp
