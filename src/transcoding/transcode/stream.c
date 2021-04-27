@@ -155,6 +155,7 @@ tvh_stream_create(TVHTranscoder *transcoder, TVHCodecProfile *profile,
         || ssc->es_width < 1900 
         || ssc->es_width > 1950 
         || ssc->es_pid == 256 
+        || ssc->es_pid == 257 
         || ssc->es_pid == 120 
         || ssc->es_pid == 140 
         || ssc->es_pid == 160) {
